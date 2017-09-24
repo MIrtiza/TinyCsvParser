@@ -29,7 +29,9 @@ namespace TinyCsvParser
             }
 
             var query = csvData
+                // Skip the Header:
                 .Skip(options.SkipHeader ? 1 : 0)
+                // Switch into Parallel Execution:
                 .AsParallel();
 
             // If you want to get the same order as in the CSV file, this option needs to be set:
@@ -39,7 +41,9 @@ namespace TinyCsvParser
             }
 
             query = query
+                // Define the Number of Threads to be used for Mapping:
                 .WithDegreeOfParallelism(options.DegreeOfParallelism)
+                // Ignore Empty Lines:
                 .Where(row => !string.IsNullOrWhiteSpace(row.Data));
 
             // Ignore Lines, that start with a comment character:
@@ -49,7 +53,9 @@ namespace TinyCsvParser
             }
                 
             return query
+                // Tokenize each line:
                 .Select(line => new TokenizedRow(line.Index, options.Tokenizer.Tokenize(line.Data)))
+                // And Map it to the Entity:
                 .Select(fields => mapping.Map(fields));
         }
 

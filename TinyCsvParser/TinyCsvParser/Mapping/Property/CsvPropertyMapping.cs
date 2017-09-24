@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using TinyCsvParser.Reflection;
 using TinyCsvParser.TypeConverter;
 
-namespace TinyCsvParser.Mapping
+namespace TinyCsvParser.Mapping.Property
 {
     public class CsvPropertyMapping<TEntity, TProperty> : ICsvPropertyMapping<TEntity>
         where TEntity : class, new()

@@ -1,7 +1,7 @@
-﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace TinyCsvParser.Mapping
+namespace TinyCsvParser.Mapping.Property
 {
     public interface ICsvPropertyMapping<TEntity>
         where TEntity : class, new()
