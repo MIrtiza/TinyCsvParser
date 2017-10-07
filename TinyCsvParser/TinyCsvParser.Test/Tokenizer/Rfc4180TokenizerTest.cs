@@ -36,7 +36,7 @@ namespace TinyCsvParser.Test.Tokenizer
         public void RFC4180_CsvParser_Integration_Test()
         {
             // Use a " as Quote Character, a \\ as Escape Character and a , as Delimiter.
-            var options = new Options('"', '\\', ',');
+            var options = new Options('"', '"', ',');
 
             // Initialize the Rfc4180 Tokenizer:
             var tokenizer = new RFC4180Tokenizer(options);
@@ -50,7 +50,7 @@ namespace TinyCsvParser.Test.Tokenizer
             var stringBuilder = new StringBuilder()
                 .AppendLine("Name, Age, Description")
                 .AppendLine("\"Michael, Chester\",24,\"Also goes by \"\"Mike\"\", among friends that is\"")
-                .AppendLine("\"Robert, Willliamson\", , \"All-around nice guy who always says hi\"");
+                .AppendLine("\"Robert, Willliamson\", ,\"All-around nice guy who always says hi\"");
             
             // Define the NewLine Character to split at:
             CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
@@ -76,7 +76,7 @@ namespace TinyCsvParser.Test.Tokenizer
         public void Rfc4180_QuotedString_Double_Quoted_Data_Test()
         {
             // Use a " as Quote Character, a \\ as Escape Character and a , as Delimiter.
-            var options = new Options('"', '\\', ',');
+            var options = new Options('"', '"', ',');
 
             // Initialize the Rfc4180 Tokenizer:
             var tokenizer = new RFC4180Tokenizer(options);
@@ -107,7 +107,7 @@ namespace TinyCsvParser.Test.Tokenizer
             var tokenizer = new RFC4180Tokenizer(options);
 
             // Initialize a String with Double Quoted Data:
-            var line = "\"Robert, Willliamson\", , \"All-around nice guy who always says hi\"";
+            var line = "\"Robert, Willliamson\",,\"All-around nice guy who always says hi\"";
             // Split the Line into its Tokens:
             var tokens = tokenizer.Tokenize(line);
 
@@ -125,13 +125,13 @@ namespace TinyCsvParser.Test.Tokenizer
         public void Rfc4180_Issue3_Empty_First_Column_Test()
         {
             // Use a " as Quote Character, a \\ as Escape Character and a , as Delimiter.
-            var options = new Options('"', '\\', ',');
+            var options = new Options('"', '"', ',');
 
             // Initialize the Rfc4180 Tokenizer:
             var tokenizer = new RFC4180Tokenizer(options);
 
             // Initialize a String with Double Quoted Data:
-            var line = " , 24 ,\"Great Guy\"";
+            var line = ",24,\"Great Guy\"";
             // Split the Line into its Tokens:
             var tokens = tokenizer.Tokenize(line);
 
@@ -149,7 +149,7 @@ namespace TinyCsvParser.Test.Tokenizer
         public void Rfc4180_Issue3_Empty_Last_Columns_Test()
         {
             // Use a " as Quote Character, a \\ as Escape Character and a , as Delimiter.
-            var options = new Options('"', '\\', ',');
+            var options = new Options('"', '"', ',');
 
             // Initialize the Rfc4180 Tokenizer:
             var tokenizer = new RFC4180Tokenizer(options);
@@ -173,7 +173,7 @@ namespace TinyCsvParser.Test.Tokenizer
         public void All_Empty_Last_Columns_Test()
         {
             // Use a " as Quote Character, a \\ as Escape Character and a , as Delimiter.
-            var options = new Options('"', '\\', ',');
+            var options = new Options('"', '"', ',');
 
             // Initialize the Rfc4180 Tokenizer:
             var tokenizer = new RFC4180Tokenizer(options);
@@ -197,7 +197,7 @@ namespace TinyCsvParser.Test.Tokenizer
         public void All_Empty_Last_Column_Not_Empty_Test()
         {
             // Use a " as Quote Character, a \\ as Escape Character and a , as Delimiter.
-            var options = new Options('"', '\\', ',');
+            var options = new Options('"', '"', ',');
 
             // Initialize the Rfc4180 Tokenizer:
             var tokenizer = new RFC4180Tokenizer(options);
