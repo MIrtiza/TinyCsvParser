@@ -174,7 +174,7 @@ namespace TinyCsvParser.Test.CsvParser
 
             Assert.IsTrue(result.All(x => x.IsValid));
 
-            Assert.AreEqual("Philipp", result[0].Result.FirstName);
+            Assert.AreEqual("     Philipp", result[0].Result.FirstName);
             Assert.AreEqual("Wagner", result[0].Result.LastName);
 
             Assert.AreEqual(1986, result[0].Result.BirthDate.Year);

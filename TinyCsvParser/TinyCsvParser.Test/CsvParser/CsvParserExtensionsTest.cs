@@ -50,7 +50,7 @@ namespace TinyCsvParser.Test.CsvParser
 
             var stringBuilder = new StringBuilder()
                 .AppendLine("FirstName;LastName;BirthDate")
-                .AppendLine("     Philipp;Wagner;1986/05/12       ")
+                .AppendLine("Philipp;Wagner;1986/05/12       ")
                 .AppendLine("Max;Mustermann;2014/01/01");
 #if NETCOREAPP1_1
             var basePath = AppContext.BaseDirectory;
