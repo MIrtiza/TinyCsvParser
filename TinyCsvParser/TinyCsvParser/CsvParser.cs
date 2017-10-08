@@ -28,6 +28,9 @@ namespace TinyCsvParser
                 throw new ArgumentNullException("csvData");
             }
 
+            // Get the Tokenizer:
+            var tokenize = options.Tokenizer;
+            
             var query = csvData
                 // Skip the Header:
                 .Skip(options.SkipHeader ? 1 : 0)
@@ -49,14 +52,39 @@ namespace TinyCsvParser
             // Ignore Lines, that start with a comment character:
             if(!string.IsNullOrWhiteSpace(options.CommentCharacter)) 
             {
-                query = query.Where(line => !line.Data.StartsWith(options.CommentCharacter));
+                query = query.Where(row => !row.Data.StartsWith(options.CommentCharacter));
             }
-                
+            
             return query
-                // Tokenize each line:
-                .Select(line => new TokenizedRow(line.Index, options.Tokenizer.Tokenize(line.Data)))
-                // And Map it to the Entity:
-                .Select(fields => mapping.Map(fields));
+                // Map the Data to the Entity:
+                .Select(row => Map(row));
+        }
+
+
+        private CsvMappingResult<TEntity> Map(Row row)
+        {
+            string[] tokens;
+            try
+            {
+                tokens = options.Tokenizer.Tokenize(row.Data);
+            }
+            catch (Exception exception)
+            {
+                // Early exit, if we cannot tokenize the line:
+                return new CsvMappingResult<TEntity>
+                {
+                    RowIndex = row.Index,
+                    Error = new CsvMappingError
+                    {
+                        Reason = ErrorReasonEnum.Tokenization,
+                        Exception = exception,
+                        Value = row.Data,
+                        Message = string.Format("Tokenization failed")
+                    }
+                };
+            }
+
+            return mapping.Map(row.Index, tokens);
         }
 
         public override string ToString()

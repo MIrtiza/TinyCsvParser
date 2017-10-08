@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using NUnit.Framework;
 using System;
+using NUnit.Framework;
 using TinyCsvParser.Mapping;
 using TinyCsvParser.Model;
 
-namespace TinyCsvParser.Test.Issues
+namespace TinyCsvParser.Test.Mapping
 {
 
     [TestFixture]
@@ -45,7 +45,7 @@ namespace TinyCsvParser.Test.Issues
         {
             var mapping = new WrongColumnMapping();
 
-            var result = mapping.Map(new TokenizedRow(1, new []{"1"}));
+            var result = mapping.Map(1, new []{"1"});
 
             Assert.IsFalse(result.IsValid);
         }
@@ -64,11 +64,12 @@ namespace TinyCsvParser.Test.Issues
         {
             var mapping = new CorrectColumnMapping();
 
-            var result = mapping.Map(new TokenizedRow(1, new[] { string.Empty }));
+            var result = mapping.Map(1, new[] { string.Empty });
 
             Assert.IsFalse(result.IsValid);
-
-            Assert.AreEqual("Column 0 with Value '' cannot be converted", result.Error.Value);
+            Assert.AreEqual(ErrorReasonEnum.Conversion, result.Error.Reason);
+            Assert.AreEqual(string.Empty, result.Error.Value);
+            Assert.AreEqual("Column 0 with Value '' cannot be converted", result.Error.Message);
             Assert.AreEqual(0, result.Error.ColumnIndex);
 
             Assert.DoesNotThrow(() => result.ToString());
@@ -79,9 +80,12 @@ namespace TinyCsvParser.Test.Issues
         {
             var mapping = new CorrectColumnMapping();
 
-            var result = mapping.Map(new TokenizedRow(1, new[] { "1" }));
+            var result = mapping.Map(1, new[] { "1" });
 
             Assert.IsTrue(result.IsValid);
+
+            Assert.IsNull(result.Error);
+
             Assert.AreEqual(1, result.Result.PropertyInt);
 
             Assert.DoesNotThrow(() => result.ToString());

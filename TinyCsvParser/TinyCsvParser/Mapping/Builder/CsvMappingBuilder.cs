@@ -51,7 +51,7 @@ namespace TinyCsvParser.Mapping.Builder
             var mappings = header
                 .Select((name, pos) =>
                 {
-                    return new IndexToPropertyMapping<TEntityType>()
+                    return new IndexToPropertyMapping<TEntityType>
                     {
                         ColumnIndex = pos,
                         PropertyMapping = csvPropertyMappings[name]

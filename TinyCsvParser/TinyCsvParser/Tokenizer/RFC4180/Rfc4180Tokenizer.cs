@@ -78,10 +78,13 @@ namespace TinyCsvParser.Tokenizer.RFC4180
             this.options = options;
             this.parser = ParserBuilder.Build(options);
         }
-
-
+        
         public string[] Tokenize(string input)
         {
+            if (options.TrimFields)
+            {
+                return parser.Parse(input.Trim()).ToArray();
+            }
             return parser.Parse(input).ToArray();
         }
 

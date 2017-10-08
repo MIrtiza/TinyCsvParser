@@ -78,7 +78,7 @@ namespace TinyCsvParser.Mapping
             csvPropertyMappings.Add(indexToPropertyMapping);
         }
 
-        public CsvMappingResult<TEntity> Map(TokenizedRow values)
+        public CsvMappingResult<TEntity> Map(int rowIndex, string[] tokens)
         {
             TEntity entity = new TEntity();
 
@@ -88,30 +88,34 @@ namespace TinyCsvParser.Mapping
 
                 var columnIndex = indexToPropertyMapping.ColumnIndex;
 
-                if (columnIndex >= values.Tokens.Length)
+                if (columnIndex >= tokens.Length)
                 {
                     return new CsvMappingResult<TEntity>()
                     {
-                        RowIndex = values.Index,
+                        RowIndex = rowIndex,
                         Error = new CsvMappingError()
                         {
                             ColumnIndex = columnIndex,
-                            Value = string.Format("Column {0} is Out Of Range", columnIndex)
+                            Reason = ErrorReasonEnum.ColumnIndex,
+                            Value = columnIndex.ToString(),
+                            Message = string.Format("Column {0} is Out Of Range", columnIndex)
                         }
                     };
                 }
 
-                var value = values.Tokens[columnIndex];
+                var value = tokens[columnIndex];
 
                 if (!indexToPropertyMapping.PropertyMapping.TryMapValue(entity, value))
                 {
                     return new CsvMappingResult<TEntity>()
                     {
-                        RowIndex = values.Index,
+                        RowIndex = rowIndex,
                         Error = new CsvMappingError
                         {
                             ColumnIndex = columnIndex,
-                            Value = string.Format("Column {0} with Value '{1}' cannot be converted", columnIndex, value)
+                            Reason = ErrorReasonEnum.Conversion,
+                            Value = value,
+                            Message = string.Format("Column {0} with Value '{1}' cannot be converted", columnIndex, value)
                         }
                     };
                 }
@@ -119,7 +123,7 @@ namespace TinyCsvParser.Mapping
 
             return new CsvMappingResult<TEntity>()
             {
-                RowIndex = values.Index,
+                RowIndex = rowIndex,
                 Result = entity
             };
         }
