@@ -12,7 +12,7 @@ using TinyCsvParser.TypeConverter;
 namespace TinyCsvParser.Test.Benchmarks
 {
 
-    [TestFixture, Ignore("LocalWeatherData, File has around 500 MB")]
+    [TestFixture]
     public class LocalWeatherDataBenchmark
     {
         public class LocalWeatherData
@@ -45,9 +45,21 @@ namespace TinyCsvParser.Test.Benchmarks
         }
 
 
-        [Test, Explicit("Performance test with a large dataset with Parallel Options")]
+        [Test]
         public void LocalWeatherReadTest()
         {
+            var dialect = new Dialect()
+            {
+                Name = "Unit Test",
+                QuoteChar = '"',
+                Delimiter = ',',
+                DoubleQuote = true,
+                EscapeChar = '\\',
+                SkipInitialSpace = true,
+                Quoting = QuoteStyleEnum.QUOTE_ALL,
+                Strict = true
+            };
+
             bool[] keepOrder = new bool[] { true, false };
             int[] degreeOfParallelismList = new[] { 4, 3, 2, 1 };
 
@@ -55,16 +67,25 @@ namespace TinyCsvParser.Test.Benchmarks
             {
                 foreach (var degreeOfParallelism in degreeOfParallelismList)
                 {
-                    CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',', degreeOfParallelism, order);
+                    CsvParserOptions csvParserOptions = new CsvParserOptions(dialect, true, degreeOfParallelism, order);
                     LocalWeatherDataMapper csvMapper = new LocalWeatherDataMapper();
                     CsvParser<LocalWeatherData> csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 
                     MeasurementUtils.MeasureElapsedTime(string.Format("LocalWeather (DegreeOfParallelism = {0}, KeepOrder = {1})", degreeOfParallelism, order),
                         () =>
                         {
-                            var a = csvParser
-                                .ReadFromFile(@"C:\Users\philipp\Downloads\csv\201503hourly.txt", Encoding.ASCII)
-                                .ToList();
+
+                            using (var stream = new StreamReader(
+                                stream: File.OpenRead(@"D:\datasets\201503hourly.txt"),
+                                detectEncodingFromByteOrderMarks: false,
+                                encoding: Encoding.ASCII))
+                            {
+                                foreach (var element in csvParser.Parse(stream))
+                                {
+
+                                }
+                            }
+
                         });
                 }
             }

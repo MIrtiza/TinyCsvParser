@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TinyCsvParser.Mapping;
 using TinyCsvParser.Model;
+using TinyCsvParser.Parsers;
 
 namespace TinyCsvParser
 {
@@ -21,41 +23,34 @@ namespace TinyCsvParser
             this.mapping = mapping;
         }
 
-        public ParallelQuery<CsvMappingResult<TEntity>> Parse(IEnumerable<Row> csvData)
+        public ParallelQuery<CsvMappingResult<TEntity>> Parse(StreamReader stream)
         {
-            if (csvData == null)
-            {
-                throw new ArgumentNullException("csvData");
-            }
+            var reader = new CsvReader(options.Dialect);
 
-            var query = csvData
+            var query = 
+                reader.Read(stream)
+                .Select((fields, index) => new TokenizedRow(index, fields))
                 .Skip(options.SkipHeader ? 1 : 0)
                 .AsParallel();
-
+            
             // If you want to get the same order as in the CSV file, this option needs to be set:
             if (options.KeepOrder)
             {
                 query = query.AsOrdered();
             }
 
+            // Add Parallelization Options:
             query = query
-                .WithDegreeOfParallelism(options.DegreeOfParallelism)
-                .Where(row => !string.IsNullOrWhiteSpace(row.Data));
+                .WithDegreeOfParallelism(options.DegreeOfParallelism);
 
-            // Ignore Lines, that start with a comment character:
-            if(!string.IsNullOrWhiteSpace(options.CommentCharacter)) 
-            {
-                query = query.Where(line => !line.Data.StartsWith(options.CommentCharacter));
-            }
-                
             return query
-                .Select(line => new TokenizedRow(line.Index, options.Tokenizer.Tokenize(line.Data)))
-                .Select(fields => mapping.Map(fields));
+                .Where(row => row.Tokens.Length > 0)
+                .Select(row => mapping.Map(row));
         }
 
         public override string ToString()
         {
-            return string.Format("CsvParser (Options = {0}, Mapping = {1})", options, mapping);
+            return $"CsvParser (Options = {options}, Mapping = {mapping})";
         }
     }
 }

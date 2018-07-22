@@ -1,56 +1,56 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using TinyCsvParser.Tokenizer;
+using TinyCsvParser.Parsers;
 
 namespace TinyCsvParser
 {
+    public enum QuoteStyleEnum
+    {
+        QUOTE_ALL,
+        QUOTE_NONE
+    }
+
+    public class Dialect
+    {
+        public string Name { get; set; }
+
+        public char Delimiter { get; set; }
+
+        public char QuoteChar { get; set; }
+
+        public char EscapeChar { get; set; }
+
+        public bool DoubleQuote { get; set; }
+
+        public bool SkipInitialSpace { get; set; }
+
+        public QuoteStyleEnum Quoting { get; set; }
+
+        public bool Strict { get; set; }
+    }
+
     public class CsvParserOptions
     {
-        public readonly ITokenizer Tokenizer;
-        
-        public readonly bool SkipHeader;
+        public readonly Dialect Dialect;
 
-        public readonly string CommentCharacter;
+        public bool SkipHeader { get; set; }
 
         public readonly int DegreeOfParallelism;
 
         public readonly bool KeepOrder;
-
-        public CsvParserOptions(bool skipHeader, char fieldsSeparator)
-            : this(skipHeader, new QuotedStringTokenizer(fieldsSeparator))
+        
+        public CsvParserOptions(Dialect dialect, bool skipHeader, int degreeOfParallelism, bool keepOrder)
         {
-        }
-
-        public CsvParserOptions(bool skipHeader, char fieldsSeparator, int degreeOfParallelism, bool keepOrder)
-            : this(skipHeader, string.Empty, new QuotedStringTokenizer(fieldsSeparator), degreeOfParallelism, keepOrder)
-        {
-        }
-
-        public CsvParserOptions(bool skipHeader, ITokenizer tokenizer)
-            : this(skipHeader, string.Empty, tokenizer)
-        {
-        }
-
-        public CsvParserOptions(bool skipHeader, string commentCharacter, ITokenizer tokenizer)
-            : this(skipHeader, commentCharacter, tokenizer, Environment.ProcessorCount, true)
-        {
-        }
-
-        public CsvParserOptions(bool skipHeader, string commentCharacter, ITokenizer tokenizer, int degreeOfParallelism, bool keepOrder)
-        {
+            Dialect = dialect;
             SkipHeader = skipHeader;
-            CommentCharacter = commentCharacter;
-            Tokenizer = tokenizer;
             DegreeOfParallelism = degreeOfParallelism;
             KeepOrder = keepOrder;
         }
 
         public override string ToString()
         {
-            return string.Format("CsvParserOptions (Tokenizer = {0}, SkipHeader = {1}, DegreeOfParallelism = {2}, KeepOrder = {3}, CommentCharacter = {4})",
-                Tokenizer, SkipHeader, DegreeOfParallelism, KeepOrder, CommentCharacter);
+            return string.Format($"CsvParserOptions (Dialect = {Dialect}, DegreeOfParallelism = {DegreeOfParallelism}, KeepOrder = {KeepOrder})");
         }
     }
 }

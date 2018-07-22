@@ -5,6 +5,38 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Benchmarks\**" />
+    <Compile Remove="CsvParser\**" />
+    <Compile Remove="Integration\**" />
+    <Compile Remove="Issues\**" />
+    <Compile Remove="Mapping\**" />
+    <Compile Remove="Parsers\**" />
+    <Compile Remove="Tokenizer\**" />
+    <Compile Remove="TypeConverter\**" />
+    <EmbeddedResource Remove="Benchmarks\**" />
+    <EmbeddedResource Remove="CsvParser\**" />
+    <EmbeddedResource Remove="Integration\**" />
+    <EmbeddedResource Remove="Issues\**" />
+    <EmbeddedResource Remove="Mapping\**" />
+    <EmbeddedResource Remove="Parsers\**" />
+    <EmbeddedResource Remove="Tokenizer\**" />
+    <EmbeddedResource Remove="TypeConverter\**" />
+    <None Remove="Benchmarks\**" />
+    <None Remove="CsvParser\**" />
+    <None Remove="Integration\**" />
+    <None Remove="Issues\**" />
+    <None Remove="Mapping\**" />
+    <None Remove="Parsers\**" />
+    <None Remove="Tokenizer\**" />
+    <None Remove="TypeConverter\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Benchmarks\LocalWeatherDataBenchmark.cs" />
+    <Compile Include="Benchmarks\MeasurementUtils.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="NUnit" Version="3.7.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0-alpha1" />
